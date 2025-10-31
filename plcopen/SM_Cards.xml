@@ -378,6 +378,50 @@
 				</body>
 				<documentation> <xhtml:p><![CDATA[Update all outputs from 8-mosfets card]]></xhtml:p> </documentation>
 			</pou>
+			<pou name="SM_GRCC" pouType="functionBlock">
+				<interface>
+				  <inputVars>
+					<variable name="OD1"> <type> <BOOL/> </type> </variable>
+					<variable name="OD2"> <type> <BOOL/> </type> </variable>
+					<variable name="OD3"> <type> <BOOL/> </type> </variable>
+					<variable name="OD4"> <type> <BOOL/> </type> </variable>
+					<variable name="Q0_10V1"> <type> <REAL/> </type> </variable>
+					<variable name="Q0_10V2"> <type> <REAL/> </type> </variable>
+					<variable name="Q0_10V3"> <type> <REAL/> </type> </variable>
+					<variable name="Q0_10V4"> <type> <REAL/> </type> </variable>
+					<variable name="Q0_10V5"> <type> <REAL/> </type> </variable>
+					<variable name="Q0_10V6"> <type> <REAL/> </type> </variable>				
+				  </inputVars>
+				  <outputVars>
+				    <variable name="OPTO1"><type><BOOL/></type></variable>
+					<variable name="OPTO2"><type><BOOL/></type></variable>
+					<variable name="OPTO3"><type><BOOL/></type></variable>
+					<variable name="OPTO4"><type><BOOL/></type></variable>
+					<variable name="OPTO5"><type><BOOL/></type></variable>
+					<variable name="OPTO6"><type><BOOL/></type></variable>
+					<variable name="I0_10V1"> <type> <REAL/> </type> </variable>
+					<variable name="I0_10V2"> <type> <REAL/> </type> </variable>
+					<variable name="I4_20MA1"> <type> <REAL/> </type> </variable>
+					<variable name="I4_20MA2"> <type> <REAL/> </type> </variable>
+					<variable name="I4_20MA3"> <type> <REAL/> </type> </variable>
+					<variable name="I4_20MA4"> <type> <REAL/> </type> </variable>
+					<variable name="TH_T1"> <type> <REAL/> </type> </variable>
+					<variable name="TH_T2"> <type> <REAL/> </type> </variable>
+					<variable name="TH_T3"> <type> <REAL/> </type> </variable>
+					<variable name="TH_T4"> <type> <REAL/> </type> </variable>
+					<variable name="TH_T5"> <type> <REAL/> </type> </variable>
+					<variable name="TH_T6"> <type> <REAL/> </type> </variable>
+				  </outputVars>
+				</interface>
+				<body>
+				  <ST>
+					<xhtml:p><![CDATA[OPTO1 := 0;]]></xhtml:p>
+				  </ST>
+				</body>
+				<documentation>
+				  <xhtml:p><![CDATA[Get all inpust and set all outputs of a GR Cooling Controller]]></xhtml:p>
+				</documentation>
+			</pou>			
 		</pous>
 	</types>
 	<instances>

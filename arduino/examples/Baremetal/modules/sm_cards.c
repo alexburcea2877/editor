@@ -1548,3 +1548,110 @@ int mosfets8Set(uint8_t stack, uint8_t val)
 	mosfetsOldVal[stack] = val;
 	return OK;
 }
+
+//------------------------------------------------------------------------------
+//                       GR Cooling Controller
+//------------------------------------------------------------------------------
+extern "C" int grcSetOd( uint8_t);
+extern "C" int grcGetOptoInputs(uint8_t*);
+extern "C" int grcGet0_10Vin(uint8_t, float*);
+extern "C" int grcGet4_20mAin(uint8_t, float*);
+extern "C" int grcGetThTemp(uint8_t, float*);
+extern "C" int grcSet0_10Vout(uint8_t, float);
+
+#define I2C_GRCC_ADDRESS_BASE 0x30
+#define GRCC_I2C_MEM_OD 0
+#define GRCC_I2C_MEM_OPTO_IN 3
+#define GRCC_I2C_U_IN_VAL1_ADD 4
+#define GRCC_I2C_I_IN_VAL1_ADD 12
+#define GRCC_I2C_TEMPERATURE_VAL1_ADD 28
+#define GRCC_I2C_U_OUT_VAL1_ADD 52
+
+#define GRCC_0_10V_IN_CH_MAX 2
+#define GRCC_4_20MA_IN_CH_MAX 4
+#define GRCC_TH_IN_CH_MAX 6
+#define GRCC_0_10V_OUT_CH_MAX 6
+
+
+int grcSetOd( uint8_t val)
+{	
+	if (OK != i2cMemWrite(I2C_GRCC_ADDRESS_BASE, GRCC_I2C_MEM_OD, &val, 1))
+	{
+		return ERROR;
+	}	
+	return OK;
+}
+
+int grcGetOptoInputs(uint8_t* val)
+{
+	if (OK != i2cMemRead(I2C_GRCC_ADDRESS_BASE, GRCC_I2C_MEM_OD, val, 1))
+	{
+		return ERROR;
+	}
+	return OK;
+}
+
+int grcGet0_10Vin(uint8_t ch, float* value);
+{
+	uint8_t buff[4];
+	
+	if (ch >= GRCC_0_10V_IN_CH_MAX || value == NULL)
+	{
+		return ERROR;
+	}
+
+	if (OK != i2cMemRead(I2C_GRCC_ADDRESS_BASE, GRCC_I2C_U_IN_VAL1_ADD + 4 * ch, buff, 4))
+	{
+		return ERROR;
+	}
+	memcpy(value, buff, 4);
+	return OK;
+}
+
+int grcGet4_20mAin(uint8_t ch, float* value)
+{
+	uint8_t buff[4];
+	
+	if (ch >= GRCC_4_20MA_IN_CH_MAX || value == NULL)
+	{
+		return ERROR;
+	}
+	if (OK != i2cMemRead(I2C_GRCC_ADDRESS_BASE, GRCC_I2C_I_IN_VAL1_ADD + 4 * ch, buff, 4))
+	{
+		return ERROR;
+	}
+	memcpy(value, buff, 4);
+	return OK;
+}
+
+int grcGetThTemp(uint8_t ch, float* val)
+{
+	uint8_t buff[4];
+	
+	if (ch >= GRCC_TH_IN_CH_MAX || value == NULL)
+	{
+		return ERROR;
+	}
+	if (OK != i2cMemRead(I2C_GRCC_ADDRESS_BASE, GRCC_I2C_TEMPERATURE_VAL1_ADD + 4 * ch, buff, 4))
+	{
+		return ERROR;
+	}
+	memcpy(value, buff, 4);
+	return OK;
+}
+
+int grcSet0_10Vout(uint8_t ch, float value)
+{
+	uint8_t buff[4];
+	
+	if (ch >= GRCC_0_10V_OUT_CH_MAX )
+	{
+		return ERROR;
+	}
+	memcpy( buff, &value, 4);
+	if (OK != i2cMemWrite(I2C_GRCC_ADDRESS_BASE, GRCC_I2C_U_OUT_VAL1_ADD + 4 * ch, buff, 4))
+	{
+		return ERROR;
+	}
+	return OK;
+}

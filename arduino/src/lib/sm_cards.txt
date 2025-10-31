@@ -345,3 +345,44 @@ FUNCTION_BLOCK SM_8MOSFET
   DUMMY := STACK;
 END_FUNCTION_BLOCK
 
+
+(*
+ * SM_GRCC
+ * -------------
+ *)
+FUNCTION_BLOCK SM_INDUSTRIAL
+  VAR_INPUT
+    OD1 : BOOL;
+    OD2 : BOOL;
+    OD3 : BOOL;
+    OD4 : BOOL;
+    Q0_10V1 : REAL;
+    Q0_10V2 : REAL;
+    Q0_10V3 : REAL;
+    Q0_10V4 : REAL;
+	Q0_10V5 : REAL;
+    Q0_10V6 : REAL;
+  
+  END_VAR
+  VAR_OUTPUT
+    OPTO1 : BOOL;
+    OPTO2 : BOOL;
+    OPTO3 : BOOL;
+    OPTO4 : BOOL;
+	OPTO5 : BOOL;
+    OPTO6 : BOOL;
+    I0_10V1 : REAL;
+    I0_10V2 : REAL;
+    I4_20MA1 : REAL;
+    I4_20MA2 : REAL;
+    I4_20MA3 : REAL;
+    I4_20MA4 : REAL;
+    TH_T1 : REAL;
+    TH_T2 : REAL;
+    TH_T3 : REAL;
+    TH_T4 : REAL; 
+	TH_T5 : REAL;
+    TH_T6 : REAL; 
+  END_VAR
+  OPTO1 := 0;
+END_FUNCTION_BLOCK

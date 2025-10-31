@@ -316,6 +316,45 @@ typedef struct {
   // FB private variables - TEMP, private and located variables
   __DECLARE_VAR(SINT,DUMMY)
 } SM_8MOSFET;
+
+
+
+// SM_GRCC
+// Data part
+typedef struct {
+  // FB Interface - IN, OUT, IN_OUT variables
+  __DECLARE_VAR(BOOL,EN)
+  __DECLARE_VAR(BOOL,ENO)
+  __DECLARE_VAR(BOOL,OD1)
+  __DECLARE_VAR(BOOL,OD2)
+  __DECLARE_VAR(BOOL,OD3)
+  __DECLARE_VAR(BOOL,OD4)
+  __DECLARE_VAR(REAL,Q0_10V1)
+  __DECLARE_VAR(REAL,Q0_10V2)
+  __DECLARE_VAR(REAL,Q0_10V3)
+  __DECLARE_VAR(REAL,Q0_10V4)
+  __DECLARE_VAR(REAL,Q0_10V5)
+  __DECLARE_VAR(REAL,Q0_10V6) 
+  __DECLARE_VAR(BOOL,OPTO1)
+  __DECLARE_VAR(BOOL,OPTO2)
+  __DECLARE_VAR(BOOL,OPTO3)
+  __DECLARE_VAR(BOOL,OPTO4)
+  __DECLARE_VAR(BOOL,OPTO5)
+  __DECLARE_VAR(BOOL,OPTO6)
+  __DECLARE_VAR(REAL,I0_10V1)
+  __DECLARE_VAR(REAL,I0_10V2)
+  __DECLARE_VAR(REAL,I4_20MA1)
+  __DECLARE_VAR(REAL,I4_20MA2)
+  __DECLARE_VAR(REAL,I4_20MA3)
+  __DECLARE_VAR(REAL,I4_20MA4)
+  __DECLARE_VAR(REAL,TH_T1)
+  __DECLARE_VAR(REAL,TH_T2)
+  __DECLARE_VAR(REAL,TH_T3)
+  __DECLARE_VAR(REAL,TH_T4)
+  __DECLARE_VAR(REAL,TH_T5)
+  __DECLARE_VAR(REAL,TH_T6)
+} SM_GRCC;
+
 /************************************************************************
  *                      END OF SM_CARDS LIB BLOCKS                      *
 ************************************************************************/
@@ -1283,3 +1322,137 @@ __end:
 } // SM_8MOSFET_body__()
 
 
+int grcSetOd( uint8_t);
+int grcGetOptoInputs(uint8_t*);
+int grcGet0_10Vin(uint8_t, float*);
+int grcGet4_20mAin(uint8_t, float*);
+int grcGetThTemp(uint8_t, float*);
+int grcSet0_10Vout(uint8_t, float);
+
+static void SM_GRCC_init__(SM_GRCC *data__, BOOL retain) {
+   __INIT_VAR(data__->EN,__BOOL_LITERAL(TRUE),retain)
+  __INIT_VAR(data__->ENO,__BOOL_LITERAL(TRUE),retain)
+  __INIT_VAR(data__->OD1,0,retain)
+  __INIT_VAR(data__->OD2,0,retain)
+  __INIT_VAR(data__->OD3,0,retain)
+  __INIT_VAR(data__->OD4,0,retain)
+  __INIT_VAR(data__->Q0_10V1,0,retain)
+  __INIT_VAR(data__->Q0_10V2,0,retain)
+  __INIT_VAR(data__->Q0_10V3,0,retain)
+  __INIT_VAR(data__->Q0_10V4,0,retain)
+  __INIT_VAR(data__->Q0_10V5,0,retain)
+  __INIT_VAR(data__->Q0_10V6,0,retain)
+  __INIT_VAR(data__->OPTO1,0,retain)
+  __INIT_VAR(data__->OPTO2,0,retain)
+  __INIT_VAR(data__->OPTO3,0,retain)
+  __INIT_VAR(data__->OPTO4,0,retain)
+  __INIT_VAR(data__->OPTO5,0,retain)
+  __INIT_VAR(data__->OPTO6,0,retain)
+  __INIT_VAR(data__->I0_10V1,0,retain)
+  __INIT_VAR(data__->I0_10V2,0,retain)
+  __INIT_VAR(data__->I4_20MA1,0,retain)
+  __INIT_VAR(data__->I4_20MA2,0,retain)
+  __INIT_VAR(data__->I4_20MA3,0,retain)
+  __INIT_VAR(data__->I4_20MA4,0,retain)
+  __INIT_VAR(data__->TH_T1,0,retain)
+  __INIT_VAR(data__->TH_T2,0,retain)
+  __INIT_VAR(data__->TH_T3,0,retain)
+  __INIT_VAR(data__->TH_T4,0,retain)
+  __INIT_VAR(data__->TH_T5,0,retain)
+  __INIT_VAR(data__->TH_T6,0,retain)
+}
+
+// Code part
+static void SM_GRCC_body__(SM_GRCC *data__) {
+  // Control execution
+  if (!__GET_VAR(data__->EN)) {
+    __SET_VAR(data__->,ENO,,__BOOL_LITERAL(FALSE));
+    return;
+  }
+  else {
+    __SET_VAR(data__->,ENO,,__BOOL_LITERAL(TRUE));
+  }
+  uint8_t output_byte = __GET_VAR(data__->OD4) << 3 | 
+                        __GET_VAR(data__->OD3) << 2 | 
+                        __GET_VAR(data__->OD2) << 1 | 
+                        __GET_VAR(data__->OD1);
+  grcSetOd(output_byte);
+  #define bitRead(value, bit) (((value) >> (bit)) & 0x01)
+  uint8_t input_byte = 0;
+  if(0 == grcGetOptoInputs(&input_byte)){
+	__SET_VAR(data__->,OPTO1,,bitRead(input_byte, 0));
+	__SET_VAR(data__->,OPTO2,,bitRead(input_byte, 1));
+	__SET_VAR(data__->,OPTO3,,bitRead(input_byte, 2));
+	__SET_VAR(data__->,OPTO4,,bitRead(input_byte, 3));
+	__SET_VAR(data__->,OPTO5,,bitRead(input_byte, 4));
+	__SET_VAR(data__->,OPTO6,,bitRead(input_byte, 5));
+  }
+  float val = 0;
+
+// ---------  0-10V inputs	------------------
+  if( 0 == grcGet0_10Vin(0, &val))
+  {
+	__SET_VAR(data__->,I0_10V1,,val);
+  }
+  if( 0 == grcGet0_10Vin(1, &val))
+  {
+	__SET_VAR(data__->,I0_10V2,,val);
+  }
+  
+
+// -------------- 4-20mA inputs -----------------------
+  if( 0 == grcGet4_20mAin(0, &val))
+  {
+	__SET_VAR(data__->,I4_20MA1,,val);
+  }
+  if( 0 == grcGet4_20mAin(1, &val))
+  {
+	__SET_VAR(data__->,I4_20MA2,,val);
+  }
+  if( 0 == grcGet4_20mAin(2, &val))
+  {
+	__SET_VAR(data__->,I4_20MA3,,val);
+  }
+  if( 0 == grcGet4_20mAin(3, &val))
+  {
+	__SET_VAR(data__->,I4_20MA4,,val);
+  }
+
+// --------------- Thermistors temperature value in degC
+  if( 0 == grcGetThTemp(0, &val))
+  {
+	__SET_VAR(data__->,TH_T1,,val);
+  }
+  if( 0 == grcGetThTemp(1, &val))
+  {
+	__SET_VAR(data__->,TH_T2,,val);
+  }
+  if( 0 == grcGetThTemp(2, &val))
+  {
+	__SET_VAR(data__->,TH_T3,,val);
+  }
+  if( 0 == grcGetThTemp(3, &val))
+  {
+	__SET_VAR(data__->,TH_T4,,val);
+  }
+  if( 0 == grcGetThTemp(4, &val))
+  {
+	__SET_VAR(data__->,TH_T5,,val);
+  }
+  if( 0 == grcGetThTemp(5, &val))
+  {
+	__SET_VAR(data__->,TH_T6,,val);
+  }
+// ----------------- 0-10V outputs ---------------------------------------
+  grcSet0_10Vout(0, __GET_VAR(data__->Q0_10V1));
+  grcSet0_10Vout(1, __GET_VAR(data__->Q0_10V2));
+  grcSet0_10Vout(2, __GET_VAR(data__->Q0_10V3));
+  grcSet0_10Vout(3, __GET_VAR(data__->Q0_10V4));
+  grcSet0_10Vout(4, __GET_VAR(data__->Q0_10V5));
+  grcSet0_10Vout(5, __GET_VAR(data__->Q0_10V6));
+
+goto __end;
+
+__end:
+  return;
+} // SM_GRCC_body__()
